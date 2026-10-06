@@ -72,93 +72,174 @@ bevande = Category("Bevande")
 # SOTTOCATEGORIE - GIOIELLI
 # ---------------------------------------------------------------------------
 
-gioielli.add_subcategory(Category("Anello"))
-gioielli.add_subcategory(Category("Amuleto"))
-gioielli.add_subcategory(Category("Collana"))
-gioielli.add_subcategory(Category("Orecchini"))
-gioielli.add_subcategory(Category("Occhiali"))
-gioielli.add_subcategory(Category("Tiare"))
+anello = Category("Anello")
+amuleto = Category("Amuleto")
+collana = Category("Collana")
+orecchini = Category("Orecchini")
+occhiali = Category("Occhiali")
+tiare = Category("Tiare")
+
+gioielli.add_subcategory(anello)
+gioielli.add_subcategory(amuleto)
+gioielli.add_subcategory(collana)
+gioielli.add_subcategory(orecchini)
+gioielli.add_subcategory(occhiali)
+gioielli.add_subcategory(tiare)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - ARMI
 # ---------------------------------------------------------------------------
 
-armi.add_subcategory(Category("Arco leggero"))
-armi.add_subcategory(Category("Arco pesante"))
-armi.add_subcategory(Category("Balestra leggera"))
-armi.add_subcategory(Category("Balestra pesante"))
-armi.add_subcategory(Category("Daga"))
-armi.add_subcategory(Category("Spada corta"))
-armi.add_subcategory(Category("Spada lunga"))
-armi.add_subcategory(Category("Spadone"))
-armi.add_subcategory(Category("Stocco"))
-armi.add_subcategory(Category("Scimitarra"))
-armi.add_subcategory(Category("Ascia"))
-armi.add_subcategory(Category("Ascetta"))
-armi.add_subcategory(Category("Ascia bipenne"))
-armi.add_subcategory(Category("Mazza"))
-armi.add_subcategory(Category("Martello da guerra"))
-armi.add_subcategory(Category("Martello pesante"))
-armi.add_subcategory(Category("Lancia"))
-armi.add_subcategory(Category("Giavellotto"))
-armi.add_subcategory(Category("Alabarda"))
-armi.add_subcategory(Category("Picca"))
-armi.add_subcategory(Category("Falce"))
-armi.add_subcategory(Category("Randello"))
-armi.add_subcategory(Category("Bastone"))
-armi.add_subcategory(Category("Fionda"))
+arco_leggero = Category("Arco leggero")
+arco_pesante = Category("Arco pesante")
+balestra_leggera = Category("Balestra leggera")
+balestra_pesante = Category("Balestra pesante")
+daga = Category("Daga")
+spada_corta = Category("Spada corta")
+spada_lunga = Category("Spada lunga")
+spadone = Category("Spadone")
+stocco = Category("Stocco")
+scimitarra = Category("Scimitarra")
+ascia = Category("Ascia")
+ascetta = Category("Ascetta")
+ascia_bipenne = Category("Ascia bipenne")
+mazza = Category("Mazza")
+martello_da_guerra = Category("Martello da guerra")
+martello_pesante = Category("Martello pesante")
+lancia = Category("Lancia")
+giavellotto = Category("Giavellotto")
+alabarda = Category("Alabarda")
+picca = Category("Picca")
+falce = Category("Falce")
+randello = Category("Randello")
+bastone = Category("Bastone")
+fionda = Category("Fionda")
+
+armi.add_subcategory(arco_leggero)
+armi.add_subcategory(arco_pesante)
+armi.add_subcategory(balestra_leggera)
+armi.add_subcategory(balestra_pesante)
+armi.add_subcategory(daga)
+armi.add_subcategory(spada_corta)
+armi.add_subcategory(spada_lunga)
+armi.add_subcategory(spadone)
+armi.add_subcategory(stocco)
+armi.add_subcategory(scimitarra)
+armi.add_subcategory(ascia)
+armi.add_subcategory(ascetta)
+armi.add_subcategory(ascia_bipenne)
+armi.add_subcategory(mazza)
+armi.add_subcategory(martello_da_guerra)
+armi.add_subcategory(martello_pesante)
+armi.add_subcategory(lancia)
+armi.add_subcategory(giavellotto)
+armi.add_subcategory(alabarda)
+armi.add_subcategory(picca)
+armi.add_subcategory(falce)
+armi.add_subcategory(randello)
+armi.add_subcategory(bastone)
+armi.add_subcategory(fionda)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - ARMATURE
 # ---------------------------------------------------------------------------
 
-armature.add_subcategory(Category("Armatura leggera"))
-armature.add_subcategory(Category("Armatura media"))
-armature.add_subcategory(Category("Armatura pesante"))
-armature.add_subcategory(Category("Scudo"))
+armatura_leggera = Category("Armatura leggera")
+armatura_media = Category("Armatura media")
+armatura_pesante = Category("Armatura pesante")
+scudo = Category("Scudo")
+
+armature.add_subcategory(armatura_leggera)
+armature.add_subcategory(armatura_media)
+armature.add_subcategory(armatura_pesante)
+armature.add_subcategory(scudo)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - OGGETTI MAGICI
 # ---------------------------------------------------------------------------
 
-oggetti_magici.add_subcategory(Category("Bacchetta"))
-oggetti_magici.add_subcategory(Category("Verga"))
-oggetti_magici.add_subcategory(Category("Pergamena"))
-oggetti_magici.add_subcategory(Category("Pozione"))
+bacchetta = Category("Bacchetta")
+verga = Category("Verga")
+pergamena = Category("Pergamena")
+pozione = Category("Pozione")
+
+oggetti_magici.add_subcategory(bacchetta)
+oggetti_magici.add_subcategory(verga)
+oggetti_magici.add_subcategory(pergamena)
+oggetti_magici.add_subcategory(pozione)
+
+# ---------------------------------------------------------------------------
+# SOTTOCATEGORIE - EQUIPAGGIAMENTO
+# ---------------------------------------------------------------------------
+
+
+borsa = Category("Borsa")
+corda = Category("Corda")
+torcia = Category("Torcia")
+attrezzi = Category("Attrezzi")
+kit = Category("Kit")
+munizioni = Category("Munizioni")
+strumento_musicale = Category("Strumento musicale")
+oggetto_da_viaggio = Category("Oggetto da viaggio")
+
+equipaggiamento.add_subcategory(borsa)
+equipaggiamento.add_subcategory(corda)
+equipaggiamento.add_subcategory(torcia)
+equipaggiamento.add_subcategory(attrezzi)
+equipaggiamento.add_subcategory(kit)
+equipaggiamento.add_subcategory(munizioni)
+equipaggiamento.add_subcategory(strumento_musicale)
+equipaggiamento.add_subcategory(oggetto_da_viaggio)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - VESTITI
 # ---------------------------------------------------------------------------
 
-vestiti.add_subcategory(Category("Mantello"))
-vestiti.add_subcategory(Category("Cappello"))
-vestiti.add_subcategory(Category("Abito"))
-vestiti.add_subcategory(Category("Scarpe"))
+mantello = Category("Mantello")
+cappello = Category("Cappello")
+abito = Category("Abito")
+scarpe = Category("Scarpe")
+
+vestiti.add_subcategory(mantello)
+vestiti.add_subcategory(cappello)
+vestiti.add_subcategory(abito)
+vestiti.add_subcategory(scarpe)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - CIBO
 # ---------------------------------------------------------------------------
 
-cibo.add_subcategory(Category("Carne"))
-cibo.add_subcategory(Category("Pesce"))
-cibo.add_subcategory(Category("Verdure"))
-cibo.add_subcategory(Category("Frutta"))
-cibo.add_subcategory(Category("Legumi"))
-cibo.add_subcategory(Category("Farine"))
+carne = Category("Carne")
+pesce = Category("Pesce")
+verdure = Category("Verdure")
+frutta = Category("Frutta")
+legumi = Category("Legumi")
+farine = Category("Farine")
+
+cibo.add_subcategory(carne)
+cibo.add_subcategory(pesce)
+cibo.add_subcategory(verdure)
+cibo.add_subcategory(frutta)
+cibo.add_subcategory(legumi)
+cibo.add_subcategory(farine)
 
 
 # ---------------------------------------------------------------------------
 # SOTTOCATEGORIE - BEVANDE
 # ---------------------------------------------------------------------------
 
-bevande.add_subcategory(Category("Alcolici"))
-bevande.add_subcategory(Category("Non alcolici"))
-bevande.add_subcategory(Category("Super alcolici"))
+alcolici = Category("Alcolici")
+non_alcolici = Category("Non alcolici")
+super_alcolici = Category("Super alcolici")
+
+bevande.add_subcategory(alcolici)
+bevande.add_subcategory(non_alcolici)
+bevande.add_subcategory(super_alcolici)
 
 # ---------------------------------------------------------------------------
 # RARITÀ

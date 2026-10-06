@@ -1,21 +1,28 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
-from product import Category, Rarity 
 
+from product import Category
+
+
+# ============================================================================
+# TIPI DI EFFETTO
+# ============================================================================
 
 class ZoneEffectType(Enum):
     """
     Tipi di effetti economici che una zona può applicare.
 
-    Il calcolo effettivo dei prezzi verrà gestito in seguito
-    dal price_calculator.py.
+    GLOBAL_PRICE_MODIFIER
+        Modifica il prezzo di tutti i prodotti della zona.
 
-    Esempi:
-        ZoneEffectType.GLOBAL_PRICE_MODIFIER      -> Modifica il prezzo di tutti i prodotti di una zona.
-        ZoneEffectType.CATEGORY_PRICE_MODIFIER    -> Modifica il prezzo dei prodotti di una categoria specifica in una zona.
-        ZoneEffectType.MAGICAL_LEVEL_MODIFIER     -> Modifica il prezzo dei prodotti magici in base al livello di sviluppo della zona. 
-                                                     Zona ad alto sviluppo magico -> +20% su prodotti magici di rarità Epica e Leggendaria.
+    CATEGORY_PRICE_MODIFIER
+        Modifica il prezzo dei prodotti appartenenti
+        a una o più categorie specifiche.
+
+    MAGICAL_LEVEL_MODIFIER
+        Modifica il prezzo di tutti i prodotti con
+        magic=True, indipendentemente dalla loro categoria.
     """
 
     GLOBAL_PRICE_MODIFIER = "global_price_modifier"
@@ -23,10 +30,14 @@ class ZoneEffectType(Enum):
     MAGICAL_LEVEL_MODIFIER = "magical_level_modifier"
 
 
+# ============================================================================
+# EFFETTO DI UNA ZONA
+# ============================================================================
+
 @dataclass
 class ZoneEffect:
     """
-    Rappresenta un singolo effetto applicato da una zona.
+    Rappresenta un singolo effetto economico applicato da una zona.
 
     modifier:
         Percentuale espressa come numero decimale.
@@ -37,21 +48,30 @@ class ZoneEffect:
             +30% -> 0.30
 
     target:
-        Indica a cosa si applica l'effetto.
+        Lista di categorie a cui applicare l'effetto.
+
+        Viene utilizzato solo con CATEGORY_PRICE_MODIFIER.
 
         Esempi:
-            "all"       -> tutti i prodotti
-            "pesce"     -> categoria Pesce
-            "carne"     -> categoria Carne
-            "frutta"    -> categoria Frutta
-            "verdure"   -> categoria Verdure
+            [Category("Pesce")]
+            [Category("Armi"), Category("Armature")]
+
+        Per GLOBAL_PRICE_MODIFIER e MAGICAL_LEVEL_MODIFIER
+        deve essere None.
+
+    description:
+        Descrizione leggibile dell'effetto.
     """
 
     effect_type: ZoneEffectType
     modifier: float = 0.0
-    target: Optional[Category] = None || Optional[Rarity] = None || str = "all"
+    target: Optional[list[Category]] = None
     description: str = ""
 
+
+# ============================================================================
+# ZONA
+# ============================================================================
 
 @dataclass
 class Zone:
@@ -70,262 +90,301 @@ class Zone:
         self.effects.append(effect)
 
 
-# ---------------------------------------------------------------------------
-# ZONE PRINCIPALI
-# ---------------------------------------------------------------------------
-
-zona_estremamente_ricca = Zone(
-    name="Zona estremamente ricca",
-    description="Zona con un elevato livello di ricchezza.",
-)
-
-zona_ricca = Zone(
-    name="Zona ricca",
-    description="Zona con un alto livello di ricchezza.",
-)
-
-zona_povera = Zone(
-    name="Zona povera",
-    description="Zona con un basso livello di ricchezza.",
-)
-
-zona_estremamente_povera = Zone(
-    name="Zona estremamente povera",
-    description="Zona con un livello di ricchezza molto basso.",
-)
-
-zona_turistica = Zone(
-    name="Zona turistica",
-    description="Zona frequentata da viaggiatori e turisti.",
-)
-
-zona_deserta = Zone(
-    name="Zona deserta",
-    description="Zona con poca disponibilità e poco commercio.",
-)
-
-zona_alto_commercio = Zone(
-    name="Zona ad alto commercio",
-    description="Zona caratterizzata da un elevato volume di commercio.",
-)
-
-zona_pesca = Zone(
-    name="Zona di pesca",
-    description="Zona in cui il pesce di maggiore rarità ha un valore più elevato.",
-)
-
-zona_montagna = Zone(
-    name="Zona di montagna",
-    description="Zona in cui la carne di maggiore qualità ha un valore più elevato.",
-)
-
-zona_pianura = Zone(
-    name="Zona di pianura",
-    description="Zona in cui frutta e verdura di maggiore qualità hanno un valore più elevato.",
-)
-
-zona_alta_istruzione = Zone(
-    name="Zona ad alta istruzione",
-    description="Zona in cui sono più facilmente reperibili oggetti magici di maggiore rarità.",
-)
-
-zona_bassa_istruzione = Zone(
-    name="Zona a bassa istruzione",
-    description="Zona in cui gli oggetti magici di maggiore rarità sono meno comuni.",
-)
-
-zona_inflazione = Zone(
-    name="Zona con inflazione",
-    description="Zona in cui l'inflazione aumenta il prezzo di tutti i prodotti.",
-)
-
 # ============================================================================
 # PERCENTUALI BASE DELLE ZONE
 # ============================================================================
 #
-# Questi valori sono volutamente definiti in un'unica sezione.
-# In futuro potranno essere caricati/modificati tramite la GUI e salvati
-# nel database senza dover modificare la logica del programma.
+# Tutti i modifier sono espressi come numeri decimali:
 #
-# Tutti i modifier sono decimali:
-#   0.20  = +20%
-#  -0.50  = -50%
-#   0.35  = +35%
+#     0.20  = +20%
+#    -0.50  = -50%
+#     0.35  = +35%
+#
+# Questi valori potranno in futuro essere modificati tramite GUI
+# e salvati nel database senza modificare la logica del programma.
 # ============================================================================
 
 ZONE_MODIFIERS = {
+
+    # Ricchezza
     "zona_estremamente_ricca": 0.70,
     "zona_ricca": 0.50,
-    "zona_povera": -0.30,
+    "zona_povera": -0.50,
     "zona_estremamente_povera": -0.80,
 
-    "zona_turistica": 0.35,
+    # Commercio / turismo
+    "zona_turistica": 0.25,
     "zona_deserta": -0.40,
     "zona_alto_commercio": -0.10,
 
+    # Produzione / risorse
     "zona_pesca": 0.20,
     "zona_montagna": 0.20,
     "zona_pianura": 0.20,
 
-    "zona_alta_istruzione": 0.20,
-    "zona_bassa_istruzione": -0.20,
+    # Sviluppo magico
+    "zona_alta_istruzione_magica": 0.20,
+    "zona_bassa_istruzione_magica": -0.20,
 
+    # Economia generale
     "zona_inflazione": 0.25,
 }
 
+
 # ============================================================================
-# EFFETTI DELLE ZONE
+# EFFETTI GLOBALI
 # ============================================================================
 
+# ---------------------------------------------------------------------------
 # Ricchezza
-zona_estremamente_ricca.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_estremamente_ricca"],
-        target="all",
-        description="Rincaro del 50% su tutti i prodotti.",
-    )
+# ---------------------------------------------------------------------------
+
+zona_estremamente_ricca = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_estremamente_ricca"],
+    description="Rincaro del 70% su tutti i prodotti.",
 )
 
-zona_ricca.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_ricca"],
-        target="all",
-        description="Rincaro del 30% su tutti i prodotti.",
-    )
+zona_ricca = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_ricca"],
+    description="Rincaro del 50% su tutti i prodotti.",
 )
 
-zona_povera.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_povera"],
-        target="all",
-        description="Sconto del 30% su tutti i prodotti.",
-    )
+zona_povera = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_povera"],
+    description="Sconto del 50% su tutti i prodotti.",
 )
 
-zona_estremamente_povera.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_estremamente_povera"],
-        target="all",
-        description="Sconto del 50% su tutti i prodotti.",
-    )
+zona_estremamente_povera = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_estremamente_povera"],
+    description="Sconto dell'80% su tutti i prodotti.",
 )
 
 
+# ---------------------------------------------------------------------------
 # Turismo
-zona_turistica.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_turistica"],
-        target="all",
-        description="Rincaro del 20% su tutti i prodotti.",
-    )
+# ---------------------------------------------------------------------------
+
+zona_turistica = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_turistica"],
+    description="Rincaro del 25% su tutti i prodotti.",
 )
 
 
+# ---------------------------------------------------------------------------
 # Zona deserta
-zona_deserta.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_deserta"],
-        target="all",
-        description="Sconto del 20% dovuto alla scarsa domanda e alla difficoltà di commercio.",
-    )
+# ---------------------------------------------------------------------------
+
+zona_deserta = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_deserta"],
+    description="Sconto del 40% dovuto alla scarsa domanda e alla difficoltà di commercio.",
 )
 
 
+# ---------------------------------------------------------------------------
 # Alto commercio
-zona_alto_commercio.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_alto_commercio"],
-        target="all",
-        description="Riduzione del 10% grazie all'elevata disponibilità di merci.",
-    )
+# ---------------------------------------------------------------------------
+
+zona_alto_commercio = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_alto_commercio"],
+    description="Riduzione del 10% grazie all'elevata disponibilità di merci.",
 )
 
 
-# Pesca
-zona_pesca.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.RARITY_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_pesca"],
-        target="Pesce",
-        description="Il pesce di maggiore rarità riceve un rincaro del 20%.",
-    )
-)
-
-
-# Montagna
-zona_montagna.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.QUALITY_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_montagna"],
-        target="Carne",
-        description="La carne di maggiore qualità riceve un rincaro del 20%.",
-    )
-)
-
-
-# Pianura
-zona_pianura.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.QUALITY_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_pianura"],
-        target="Frutta",
-        description="La frutta di maggiore qualità riceve un rincaro del 20%.",
-    )
-)
-
-zona_pianura.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.QUALITY_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_pianura"],
-        target="Verdure",
-        description="Le verdure di maggiore qualità ricevono un rincaro del 20%.",
-    )
-)
-
-
-# Istruzione
-zona_alta_istruzione.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.MAGICAL_RARITY_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_alta_istruzione"],
-        target="magical",
-        description="Gli oggetti magici di maggiore rarità ricevono un rincaro del 20%.",
-    )
-)
-
-zona_bassa_istruzione.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.MAGICAL_RARITY_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_bassa_istruzione"],
-        target="magical",
-        description="Gli oggetti magici di maggiore rarità ricevono uno sconto del 20%.",
-    )
-)
-
-
+# ---------------------------------------------------------------------------
 # Inflazione
-zona_inflazione.add_effect(
-    ZoneEffect(
-        effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
-        modifier=ZONE_MODIFIERS["zona_inflazione"],
-        target="all",
-        description="Rincaro del 25% su tutti i prodotti indipendentemente dalla categoria.",
-    )
+# ---------------------------------------------------------------------------
+
+zona_inflazione = ZoneEffect(
+    effect_type=ZoneEffectType.GLOBAL_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_inflazione"],
+    description="Rincaro del 25% su tutti i prodotti.",
+)
+
+
+# ============================================================================
+# EFFETTI BASATI SULLA CATEGORIA
+# ============================================================================
+
+# ---------------------------------------------------------------------------
+# Zona mineraria
+# ---------------------------------------------------------------------------
+
+zona_mineraria = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_montagna"],
+    target=[
+        Category("Armi"),
+        Category("Armature"),
+    ],
+    description="Le armi e le armature realizzate con minerali di maggiore qualità ricevono un rincaro del 20%.",
 )
 
 
 # ---------------------------------------------------------------------------
-# ELENCO DELLE ZONE
+# Zona di pesca
 # ---------------------------------------------------------------------------
 
-ZONES = [
+zona_pesca = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pesca"],
+    target=[
+        Category("Pesce"),
+    ],
+    description="Il pesce riceve un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona montana - carne
+# ---------------------------------------------------------------------------
+
+zona_carne = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_montagna"],
+    target=[
+        Category("Carne"),
+    ],
+    description="La carne riceve un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di pianura - frutta
+# ---------------------------------------------------------------------------
+
+zona_frutta = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Frutta"),
+    ],
+    description="La frutta riceve un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di pianura - verdure
+# ---------------------------------------------------------------------------
+
+zona_verdura = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Verdure"),
+    ],
+    description="Le verdure ricevono un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di pianura - farina
+# ---------------------------------------------------------------------------
+
+zona_farina = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Farina"),
+    ],
+    description="La farina riceve un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di pianura - legumi
+# ---------------------------------------------------------------------------
+
+zona_legumi = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Legumi"),
+    ],
+    description="I legumi ricevono un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di produzione di alcolici
+# ---------------------------------------------------------------------------
+
+zona_alcolici = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Alcolici"),
+        Category("Super Alcolici"),
+    ],
+    description="Gli alcolici ricevono un rincaro del 20%.",
+)
+
+
+# ---------------------------------------------------------------------------
+# Zona di produzione di gioielli e vestiti
+# ---------------------------------------------------------------------------
+
+zona_gioielli_vestiti = ZoneEffect(
+    effect_type=ZoneEffectType.CATEGORY_PRICE_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_pianura"],
+    target=[
+        Category("Gioielli"),
+        Category("Vestiti"),
+    ],
+    description="I gioielli e i vestiti ricevono un rincaro del 20%.",
+)
+
+
+# ============================================================================
+# EFFETTI BASATI SULLO SVILUPPO MAGICO
+# ============================================================================
+#
+# Questi effetti NON utilizzano target.
+#
+# Il price_calculator.py controllerà:
+#
+#     product.magic == True
+#
+# indipendentemente dalla categoria del prodotto.
+#
+# Quindi l'effetto si applica sia a:
+#
+#     Spada +1
+#     Armatura magica
+#     Pozione
+#     Bacchetta
+#     Pergamena magica
+#     ecc.
+#
+# purché product.magic sia True.
+# ============================================================================
+
+zona_alta_istruzione_magica = ZoneEffect(
+    effect_type=ZoneEffectType.MAGICAL_LEVEL_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_alta_istruzione_magica"],
+    description="L'elevato sviluppo magico della zona aumenta del 20% il prezzo di tutti gli oggetti magici.",
+)
+
+
+zona_bassa_istruzione_magica = ZoneEffect(
+    effect_type=ZoneEffectType.MAGICAL_LEVEL_MODIFIER,
+    modifier=ZONE_MODIFIERS["zona_bassa_istruzione_magica"],
+    description="Il basso sviluppo magico della zona riduce del 20% il prezzo di tutti gli oggetti magici.",
+)
+
+
+# ============================================================================
+# ELENCO DI TUTTI GLI EFFETTI DISPONIBILI
+# ============================================================================
+
+ZONES_EFFECTS = [
+    # Globali
     zona_estremamente_ricca,
     zona_ricca,
     zona_povera,
@@ -333,10 +392,20 @@ ZONES = [
     zona_turistica,
     zona_deserta,
     zona_alto_commercio,
-    zona_pesca,
-    zona_montagna,
-    zona_pianura,
-    zona_alta_istruzione,
-    zona_bassa_istruzione,
     zona_inflazione,
+
+    # Categorie
+    zona_mineraria,
+    zona_pesca,
+    zona_carne,
+    zona_frutta,
+    zona_verdura,
+    zona_farina,
+    zona_legumi,
+    zona_alcolici,
+    zona_gioielli_vestiti,
+
+    # Sviluppo magico
+    zona_alta_istruzione_magica,
+    zona_bassa_istruzione_magica,
 ]
