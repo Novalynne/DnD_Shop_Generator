@@ -16,6 +16,15 @@ class Rarity:
     name: str
     multiplier: int
 
+# ---------------------------------------------------------------------------
+# RARITÀ
+# ---------------------------------------------------------------------------
+
+comune = Rarity("Comune", 1)
+rara = Rarity("Rara", 2)
+epica = Rarity("Epica", 3)
+leggendaria = Rarity("Leggendaria", 4)
+
 @dataclass
 class Category:
     """
@@ -45,13 +54,13 @@ class Product:
     dalla categoria: in questo modo, ad esempio, una Spada lunga
     può essere Comune, Rara, Magica, ecc.
     """
-
+    id: str
     name: str
     category: Category
     base_price_mr: int
     description: str = ""
     is_magical: bool = False
-    rarity: Rarity
+    rarity: Rarity = comune
 
 
 # ---------------------------------------------------------------------------
@@ -240,15 +249,6 @@ super_alcolici = Category("Super alcolici")
 bevande.add_subcategory(alcolici)
 bevande.add_subcategory(non_alcolici)
 bevande.add_subcategory(super_alcolici)
-
-# ---------------------------------------------------------------------------
-# RARITÀ
-# ---------------------------------------------------------------------------
-
-comune = Rarity("Comune", 1)
-rara = Rarity("Rara", 2)
-epica = Rarity("Epica", 3)
-leggendaria = Rarity("Leggendaria", 4)
 
 
 # ---------------------------------------------------------------------------
