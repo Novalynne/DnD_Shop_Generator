@@ -1,9 +1,5 @@
-from product import (
+from dnd_shop.models.product import (
     Product,
-    comune,
-    rara,
-    epica,
-    leggendaria,
 
     # Categorie / sottocategorie
     arco_leggero,

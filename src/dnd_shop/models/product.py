@@ -60,7 +60,7 @@ class Product:
     base_price_mr: int
     description: str = ""
     is_magical: bool = False
-    rarity: Rarity = comune
+    rarity: Rarity = field(default_factory=lambda: Rarity("Comune", 1))
 
 
 # ---------------------------------------------------------------------------
@@ -86,14 +86,14 @@ amuleto = Category("Amuleto")
 collana = Category("Collana")
 orecchini = Category("Orecchini")
 occhiali = Category("Occhiali")
-tiare = Category("Tiare")
+tiara = Category("Tiara")
 
 gioielli.add_subcategory(anello)
 gioielli.add_subcategory(amuleto)
 gioielli.add_subcategory(collana)
 gioielli.add_subcategory(orecchini)
 gioielli.add_subcategory(occhiali)
-gioielli.add_subcategory(tiare)
+gioielli.add_subcategory(tiara)
 
 
 # ---------------------------------------------------------------------------
