@@ -1,13 +1,17 @@
-from data import PRODUCTS
-from models.product import Product, Category, Rarity
-from models.shop import Shop, ShopType
-from ai_generator import AIGenerator
-from utils.price_calculator import PriceCalculator
+from unicodedata import category
+
+from dnd_shop.data.product_catalogue import PRODUCTS
+from dnd_shop.models.product import Product, Category, Rarity, RARITIES
+from dnd_shop.models.shop import Shop, ShopType
+from dnd_shop.generator.ai_generator import AIGenerator
+from dnd_shop.utils.price_calculator import PriceCalculator
 
 import random
 
 
 class ShopGenerator:
+
+    ai = AIGenerator()
 
     # ---------------------------------------------------------------------------
     # GENERAZIONE PRODOTTI
@@ -15,11 +19,22 @@ class ShopGenerator:
 
     @staticmethod
     def generate_random_rarity() -> Rarity:
-        return random.choice(list(Rarity))
+        return random.choice(RARITIES)
 
     @staticmethod
     def generate_random_magical_property() -> bool:
         return random.choice([True, False])
+
+    @staticmethod
+    def get_all_subcategories(category: Category) -> list[Category]:
+        categories = [category]
+
+        for subcategory in category.subcategories:
+            categories.extend(
+                ShopGenerator.get_all_subcategories(subcategory)
+            )
+
+        return categories
 
     @staticmethod
     def generate_random_products(
@@ -28,10 +43,17 @@ class ShopGenerator:
         zone=None
     ) -> list[Product]:
 
+        all_allowed_categories = []
+
+        for category in allowed_categories:
+            all_allowed_categories.extend(
+                ShopGenerator.get_all_subcategories(category)
+            )
+
         available_products = [
             product
             for product in PRODUCTS
-            if product.category in allowed_categories
+            if product.category in all_allowed_categories
         ]
 
         if not available_products:
@@ -49,13 +71,20 @@ class ShopGenerator:
             # 2. Generiamo le proprietà dinamiche
             rarity = ShopGenerator.generate_random_rarity()
             is_magical = ShopGenerator.generate_random_magical_property()
-
-            # 3. Chiediamo all'AI nome e descrizione
-            name, description = AIGenerator.generate_product(
-                base_product=base_product,
-                is_magical=is_magical,
-                rarity=rarity
-            )
+                
+            if (_ == num_products-1):
+                # 3. Chiediamo all'AI nome e descrizione solo per l'ultimo oggetto
+                #    in modo tale da evitare di fare troppe chiamate all'ai dato che
+                #    si usa per la generazione un modello gratuito e quindi soggetto a
+                #    limitazioni
+                name, description = ShopGenerator.ai.generate_product(
+                    base_product=base_product,
+                    is_magical=is_magical,
+                    rarity=rarity.name
+                )
+            else:
+                name = base_product.name
+                description = base_product.description or "Nessuna descrizione disponibile."
 
             # 4. Creiamo il prodotto e li assegniamo il prezzo di base nel catalogo
             product = Product(
@@ -89,7 +118,7 @@ class ShopGenerator:
     ) -> Shop:
 
         # Nome e descrizione dello shop generati dall'AI
-        name, description = AIGenerator.generate_shop(
+        name, description = ShopGenerator.ai.generate_shop(
             shop_type=shop_type,
             allowed_categories=allowed_categories
         )

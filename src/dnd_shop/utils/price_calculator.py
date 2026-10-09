@@ -1,5 +1,5 @@
-from models import Product
-from models import Zone, ZoneEffectType
+from dnd_shop.models.product import Product
+from dnd_shop.models.zones import Zone, ZoneEffectType
 
 
 class PriceCalculator:

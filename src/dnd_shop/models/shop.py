@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
-from zones import Zone
-from product import Product, Category
+from dnd_shop.models.zones import Zone
+from dnd_shop.models.product import Product, Category
 
 
 class ShopType(Enum):
@@ -36,7 +36,7 @@ class Shop:
 
     type: ShopType
     name: str
-    description: str = ""
+    description: str
     allowed_categories: list[Category]
     products: list[Product] = field(default_factory=list)
     zone: Optional[Zone] = None

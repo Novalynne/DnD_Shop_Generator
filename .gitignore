@@ -16,7 +16,7 @@ dist/
 *.spec
 
 # Environment variables
-.env
+#.env
 
 # OS
 .DS_Store

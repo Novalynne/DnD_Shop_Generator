@@ -203,7 +203,7 @@ class AIGenerator:
 Sei uno scrittore fantasy specializzato in oggetti
 per campagne di Dungeons & Dragons.
 
-Genera un nome originale e una descrizione immersiva
+Genera un nome originale e una breve descrizione immersiva
 in italiano per il seguente oggetto.
 
 Tipo di oggetto: {product_type}

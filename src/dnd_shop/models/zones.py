@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
-from product import Category
+from dnd_shop.models.product import Category
 
 
 # ============================================================================
@@ -82,7 +82,7 @@ class Zone:
     """
 
     name: str
-    description: str = ""
+    description: str
     effects: list[ZoneEffect] = field(default_factory=list)
 
     def add_effect(self, effect: ZoneEffect) -> None:
