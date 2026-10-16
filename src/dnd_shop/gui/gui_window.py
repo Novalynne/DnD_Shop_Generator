@@ -1,6 +1,7 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+from dnd_shop.models import CATEGORIES, RARITIES, ZONES_EFFECTS, ZONES, ShopType
 
 
 class ShopGeneratorApp(tk.Tk):
@@ -14,7 +15,6 @@ class ShopGeneratorApp(tk.Tk):
         self.minsize(850, 550)
 
         # 2. Variabili collegate ai widget
-        self.shop_name = tk.StringVar(value="La Forgia Antica")
         self.shop_type = tk.StringVar(value="Armeria")
         self.zone = tk.StringVar(value="Città ricca")
         self.product_count = tk.IntVar(value=5)

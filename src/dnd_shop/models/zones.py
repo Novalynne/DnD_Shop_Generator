@@ -409,3 +409,5 @@ ZONES_EFFECTS = [
     zona_alta_istruzione_magica,
     zona_bassa_istruzione_magica,
 ]
+
+ZONES = []
